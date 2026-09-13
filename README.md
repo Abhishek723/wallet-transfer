@@ -112,3 +112,5 @@ run before startup under a database advisory lock and reject edited applied file
 The [one-page design write-up](docs/DESIGN.md) explains correctness, tradeoffs,
 failure behavior, AI involvement, and the free-tier target. No real payment rails,
 currency conversion, public deposits, or user registration are included.
+The submission-ready [single-page PDF](output/pdf/wallet-design.pdf) contains the same write-up.
+To regenerate it, install `reportlab` and run `python scripts/build_writeup.py`.
