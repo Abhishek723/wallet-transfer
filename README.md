@@ -3,6 +3,18 @@
 A Python/FastAPI service with PostgreSQL transactions, per-user idempotency,
 structured JSON logs, and Prometheus metrics. All money uses integer paise.
 
+## Live deployment
+
+- API and interactive docs: <https://wallet-transfer-p325.onrender.com/docs>
+- Readiness: <https://wallet-transfer-p325.onrender.com/health/ready>
+- Metrics: <https://wallet-transfer-p325.onrender.com/metrics>
+- [Deployed verification results](docs/VERIFICATION.md)
+- [Actual deployed log excerpt](docs/deployed-logs.jsonl) (static, not a live stream)
+
+Hosted on Render Free with Neon PostgreSQL 17, both in Singapore. The free web
+service sleeps when inactive; the first request can take about a minute. Demo
+credentials are shared privately. No real money or payment accounts are involved.
+
 ## Run locally
 
 Requires Docker with Compose:
@@ -48,6 +60,13 @@ After creating and funding a local demo, verify an actual container restart with
 `python scripts/check_restart.py --config .demo/local-reviewer.json`.
 This briefly restarts only the Compose app and checks that retrying a committed
 transfer returns the original result without moving balances again.
+For a hosted restart, run the command below, restart the service in Render, and
+continue only after Render confirms the restart. The script checks the saved
+response and balances.
+
+```sh
+python scripts/check_restart.py --manual --config .demo/render-reviewer.json
+```
 
 ## API contract
 
