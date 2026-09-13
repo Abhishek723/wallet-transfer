@@ -1,0 +1,43 @@
+name: wallet-transfer
+services:
+  db:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: wallet
+      POSTGRES_PASSWORD: wallet
+      POSTGRES_DB: wallet
+    ports:
+      - "127.0.0.1:${DB_PORT:-55432}:5432"
+    volumes:
+      - wallet-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U wallet -d wallet"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://wallet:wallet@db:5432/wallet
+      PORT: "8000"
+    ports:
+      - "127.0.0.1:${APP_PORT:-8000}:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - demo-data:/demo
+  tools:
+    profiles: ["tools"]
+    build: .
+    environment:
+      DATABASE_URL: postgresql://wallet:wallet@db:5432/wallet
+    volumes:
+      - demo-data:/demo
+    depends_on:
+      app:
+        condition: service_healthy
+    entrypoint: ["wallet"]
+volumes:
+  wallet-data:
+  demo-data:

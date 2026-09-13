@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: wallet-transfer
+    runtime: docker
+    plan: free
+    healthCheckPath: /health/ready
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: DB_POOL_SIZE
+        value: "5"
