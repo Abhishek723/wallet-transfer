@@ -44,6 +44,11 @@ after debit, restart replay, lock timeouts, authorization, strict amounts, and
 metrics. Set `DATABASE_URL` and run `wallet serve` to develop outside Docker.
 The default app uses one Uvicorn worker and a bounded database connection pool.
 
+After creating and funding a local demo, verify an actual container restart with
+`python scripts/check_restart.py --config .demo/local-reviewer.json`.
+This briefly restarts only the Compose app and checks that retrying a committed
+transfer returns the original result without moving balances again.
+
 ## API contract
 
 All four business endpoints require `Authorization: Bearer <token>`.

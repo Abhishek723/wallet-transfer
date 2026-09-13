@@ -9,6 +9,14 @@ from wallet_service.config import Settings
 
 
 def make_pool(settings: Settings):
+    def configure(conn):
+        conn.isolation_level = psycopg.IsolationLevel.READ_COMMITTED
+        conn.execute(
+            "SELECT set_config('lock_timeout', %s, false), "
+            "set_config('statement_timeout', %s, false)",
+            (f"{settings.lock_timeout_ms}ms", f"{settings.statement_timeout_ms}ms"),
+        )
+
     return ConnectionPool(
         settings.database_url,
         min_size=1,
@@ -16,6 +24,7 @@ def make_pool(settings: Settings):
         timeout=settings.pool_timeout,
         open=False,
         check=ConnectionPool.check_connection,
+        configure=configure,
         kwargs={"autocommit": True, "row_factory": dict_row, "connect_timeout": 10},
     )
 
